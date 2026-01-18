@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gia Đình Nhìu Chiện PUBG | Official Site</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* --- CORE SETTINGS --- */
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff00ff;
+            --neon-yellow: #ffe600;
+            --bg-dark: #050b14;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-dark);
+            color: #e2e8f0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 0%, #1e293b 0%, transparent 70%),
+                url('https://cdn.pixabay.com/photo/2016/06/02/02/33/triangles-1430105_1280.png');
+            background-blend-mode: screen, multiply;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .font-gaming {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, var(--neon-pink), var(--neon-blue)); border-radius: 10px; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-marquee-slow { animation: marquee 35s linear infinite; }
+        .animate-marquee-normal { animation: marquee 15s linear infinite; }
+        .animate-spin-slow { animation: spin 8s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- CARD STYLES --- */
+        .member-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-frame-container {
+            position: relative;
+            aspect-ratio: 9/16; 
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1); 
+            transition: transform 0.4s ease;
+        }
+
+        .member-card:hover .card-frame-container {
+            transform: scale(1.03);
+            box-shadow: 0 0 25px rgba(var(--shadow-color), 0.6);
+            border-color: rgba(var(--shadow-color), 1);
+        }
+
+        /* --- GLASSMORPHISM UI --- */
+        .glass-panel {
+            background: rgba(17, 25, 40, 0.7);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.125);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .parallelogram-box {
+            clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+            transition: all 0.3s ease;
+        }
+        .parallelogram-box-reverse {
+            clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            opacity: 0; visibility: hidden; transition: all 0.4s ease;
+            backdrop-filter: blur(8px);
+        }
+        .modal.active { opacity: 1; visibility: visible; }
+        .modal-content { transform: scale(0.8) translateY(50px); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .modal.active .modal-content { transform: scale(1) translateY(0); }
+
+        /* --- LIGHTBOX SPECIFIC --- */
+        #lightbox-modal.active {
+            display: flex !important;
+            opacity: 1;
+            visibility: visible;
+        }
+        #lightbox-modal img {
+            max-height: 90vh;
+            max-width: 90vw;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        /* --- WHEEL CUSTOM --- */
+        #wheel-canvas {
+            border-radius: 50%;
+            border: 8px solid #1a1a1a;
+            box-shadow: 0 0 0 4px #fbbf24, 0 0 30px rgba(251, 191, 36, 0.5);
+        }
+        .arrow-down {
+            width: 0; height: 0; 
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #ef4444;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="min-h-screen selection:bg-pink-500 selection:text-white">
+
+    <!-- HEADER SECTION -->
+    <header class="relative w-full mb-12">
+        <div class="w-full h-[60vh] md:h-[80vh] relative overflow-hidden group">
+            <div class="absolute inset-0 bg-black/40 z-10"></div>
+            <!-- UPDATED HEADER IMAGE -->
+            <img src="https://i.ibb.co/Y7vGMbwS/Create-a-highresolution-202601172123.jpg" 
+                 class="w-full h-full object-cover object-top transition-transform duration-[3s] group-hover:scale-105" 
+                 alt="Clan Banner">
+            
+            <div class="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
+                <div class="animate-float">
+                    <h1 class="font-gaming text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] mb-2 uppercase border-b-4 border-yellow-500 pb-2 inline-block">
+                        Gia Đình Nhìu Chiện
+                    </h1>
+                    <p class="text-xl md:text-2xl font-bold tracking-[0.5em] text-blue-300 uppercase mt-2 glow-text">PUBG MOBILE CLAN</p>
+                </div>
+            </div>
+            <div class="absolute bottom-0 w-full h-32 bg-gradient-to-t from-[var(--bg-dark)] to-transparent z-20"></div>
+        </div>
+    </header>
+
+    <!-- MEMBERS SECTION -->
+    <main class="container mx-auto px-4 pb-20 max-w-6xl">
+        <div class="text-center mb-16 relative">
+            <h2 class="text-4xl md:text-5xl font-gaming font-bold text-white inline-block relative z-10">
+                THÀNH VIÊN NỔI BẬT
+            </h2>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-1/2 h-12 bg-blue-500/20 blur-xl rounded-full -z-0"></div>
+        </div>
+
+        <div id="members-container" class="space-y-16">
+            <!-- Members will be injected here -->
+        </div>
+    </main>
+
+    <!-- FOOTER ACTION -->
+    <div class="text-center pb-12 flex flex-col items-center gap-8">
+        
+        <!-- BUTTONS GROUP -->
+        <div class="flex flex-wrap gap-4 justify-center px-4 w-full">
+            <a href="https://zalo.me/g/eipdae678" target="_blank" 
+               class="relative px-8 py-3 bg-blue-600 overflow-hidden rounded-md group hover:bg-blue-700 transition-all shadow-[0_0_20px_rgba(37,99,235,0.4)]">
+                <span class="absolute w-0 h-full bg-white/20 left-0 top-0 transition-all duration-300 group-hover:w-full"></span>
+                <span class="relative font-bold text-lg"><i class="fa-solid fa-comments mr-2"></i>GIA NHẬP NGAY</span>
+            </a>
+            
+            <button onclick="toggleWheelModal()" 
+               class="relative px-8 py-3 bg-purple-600 overflow-hidden rounded-md group hover:bg-purple-700 transition-all shadow-[0_0_20px_rgba(147,51,234,0.4)]">
+                <span class="absolute w-0 h-full bg-white/20 left-0 top-0 transition-all duration-300 group-hover:w-full"></span>
+                <span class="relative font-bold text-lg uppercase"><i class="fa-solid fa-dice mr-2"></i>KIẾM THÀNH VIÊN NGẪU NHIÊN</span>
+            </button>
+            
+            <a href="https://photos.app.goo.gl/xz763ZtwfMHn6JGt7" target="_blank" 
+                class="relative px-8 py-3 bg-pink-600 overflow-hidden rounded-md group hover:bg-pink-700 transition-all shadow-[0_0_20px_rgba(219,39,119,0.4)]">
+                 <span class="absolute w-0 h-full bg-white/20 left-0 top-0 transition-all duration-300 group-hover:w-full"></span>
+                 <span class="relative font-bold text-lg"><i class="fa-solid fa-camera-retro mr-2"></i>KỶ NIỆM</span>
+             </a>
+        </div>
+
+        <!-- CULTURE BUTTON -->
+        <button onclick="toggleCultureModal()" 
+                class="group relative inline-flex items-center justify-center px-10 py-4 font-bold text-white transition-all duration-200 bg-transparent border-2 border-yellow-500 rounded-lg hover:bg-yellow-500 hover:text-black hover:shadow-[0_0_30px_rgba(234,179,8,0.6)]">
+            <span class="relative text-xl uppercase tracking-widest"><i class="fa-solid fa-scroll mr-2"></i> Nội Quy & Văn Hoá</span>
+        </button>
+    </div>
+
+    <footer class="py-8 bg-black/80 text-center border-t border-gray-800">
+        <p class="text-gray-400 font-mono">© 2026 Gia Đình Nhìu Chiện PUBG. Design by <span class="text-yellow-400 font-bold">THE BÁO</span></p>
+    </footer>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- PROFILE MODAL -->
+    <div id="profile-modal" class="modal fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90">
+        <div class="modal-content relative w-full max-w-5xl bg-[#0f172a] rounded-xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-gray-700 max-h-[90vh] h-auto">
+            
+            <button onclick="closeProfile()" class="absolute top-4 right-4 z-50 text-gray-400 hover:text-red-500 transition text-2xl bg-black/50 w-10 h-10 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-times"></i>
+            </button>
+
+            <!-- LEFT: IMAGE -->
+            <div class="w-full md:w-5/12 bg-black/60 p-4 flex items-center justify-center relative shrink-0">
+                <div class="relative w-full md:w-auto h-auto aspect-[9/16] shadow-[0_0_20px_rgba(0,0,0,0.5)] rounded-lg overflow-hidden border border-gray-700 bg-black max-h-[50vh] md:max-h-[80vh] group">
+                    <img id="modal-img" src="" class="w-full h-full object-contain cursor-zoom-in transition-transform duration-300 group-hover:scale-105" alt="Profile" onclick="openLightbox(this.src)">
+                    <!-- Hint text for click -->
+                    <div class="absolute bottom-2 left-0 w-full text-center text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                        <i class="fa-solid fa-expand"></i> Chạm để xem full
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: STATS -->
+            <div class="w-full md:w-7/12 p-6 md:p-8 flex flex-col overflow-y-auto bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
+                <div class="min-h-min pb-10">
+                    <h2 id="modal-name" class="text-4xl md:text-5xl font-gaming font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-2 mt-4 md:mt-0">NAME</h2>
+                    <div id="modal-role-badge" class="mb-6"></div>
+
+                    <div class="space-y-8">
+                        <!-- Slogan Box -->
+                        <div class="bg-gray-800/50 border-l-4 border-yellow-500 pt-7 pb-3 px-4 rounded-r relative group mt-2">
+                            <span class="text-xs text-yellow-500 uppercase font-bold tracking-widest absolute -top-3 left-0 bg-gray-900 px-2 py-1 border border-yellow-500/30 rounded shadow-md z-10">
+                                <i class="fa-solid fa-quote-left mr-1"></i> Slogan
+                            </span>
+                            <div class="marquee-container overflow-hidden whitespace-nowrap w-full">
+                                <div id="modal-slogan" class="inline-block animate-marquee-slow font-gaming text-xl text-yellow-100 py-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- Gun Stats -->
+                        <div class="bg-gray-800/50 border-l-4 border-red-500 pt-7 pb-3 px-4 rounded-r relative group">
+                            <span class="text-xs text-red-500 uppercase font-bold tracking-widest absolute -top-3 left-0 bg-gray-900 px-2 py-1 border border-red-500/30 rounded shadow-md z-10">
+                                <i class="fa-solid fa-crosshairs mr-1"></i> Sở trường
+                            </span>
+                            <div class="marquee-container overflow-hidden whitespace-nowrap w-full">
+                                <div id="modal-guns" class="inline-block animate-marquee-normal font-bold text-lg text-white py-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="bg-gray-800/50 border-l-4 border-blue-500 pt-8 pb-4 px-5 rounded-r relative">
+                            <span class="text-xs text-blue-500 uppercase font-bold tracking-widest absolute -top-3 left-0 bg-gray-900 px-2 py-1 border border-blue-500/30 rounded shadow-md z-10">
+                                <i class="fa-solid fa-id-card mr-1"></i> Tiểu sử
+                            </span>
+                            <p id="modal-desc" class="text-gray-300 italic leading-relaxed text-base"></p>
+                        </div>
+
+                        <!-- Buttons Group -->
+                        <div class="flex flex-col gap-3 mt-4">
+                            <a id="modal-drive" href="#" target="_blank" class="block w-full py-4 text-center border border-green-500 text-green-400 hover:bg-green-500 hover:text-white font-gaming font-bold rounded uppercase transition-all tracking-wider">
+                                <i class="fa-brands fa-google-drive mr-2"></i> Truy cập Kho Lưu Trữ
+                            </a>
+
+                            <a id="modal-img-link" href="#" target="_blank" class="block w-full py-4 text-center border border-blue-500 text-blue-400 hover:bg-blue-600 hover:text-white font-gaming font-bold rounded uppercase transition-all tracking-wider">
+                                <i class="fa-solid fa-comments mr-2"></i> Kết bạn Zalo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX MODAL -->
+    <div id="lightbox-modal" class="modal fixed inset-0 z-[80] flex items-center justify-center bg-black/95 p-4 backdrop-blur-xl" onclick="closeLightbox()">
+        <button class="absolute top-4 right-4 text-white text-5xl hover:text-red-500 transition z-50">&times;</button>
+        <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain rounded shadow-2xl animate-float">
+    </div>
+
+    <!-- WHEEL MODAL -->
+    <div id="wheel-modal" class="modal fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/95">
+        <div class="relative flex flex-col items-center">
+            <button onclick="toggleWheelModal()" class="absolute -top-12 right-0 text-white hover:text-red-500 text-3xl">
+                <i class="fa-solid fa-times"></i>
+            </button>
+            
+            <h3 class="font-gaming text-3xl text-yellow-400 mb-8 text-center animate-pulse">VÒNG QUAY ĐỊNH MỆNH</h3>
+            
+            <div class="relative mb-8 group">
+                <div class="arrow-down absolute -top-6 left-1/2 -translate-x-1/2 z-20"></div>
+                <canvas id="wheel-canvas" width="350" height="350" class="shadow-2xl"></canvas>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-full shadow-lg z-10 border-2 border-white"></div>
+            </div>
+
+            <button id="spin-btn" onclick="spinWheel()" 
+                class="px-12 py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white text-2xl font-gaming font-bold rounded-full shadow-[0_0_30px_rgba(239,68,68,0.6)] hover:scale-110 active:scale-95 transition-all uppercase">
+                QUAY NGAY
+            </button>
+            
+            <div id="winner-text" class="mt-6 text-2xl font-bold text-white h-8 text-shadow-glow"></div>
+        </div>
+    </div>
+
+    <!-- CULTURE MODAL -->
+    <div id="culture-modal" class="modal fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90">
+        <div class="modal-content max-w-lg glass-panel p-8 rounded-2xl border border-yellow-500/30 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-yellow-500 to-transparent"></div>
+            <i class="fa-solid fa-scale-balanced text-5xl text-yellow-500 mb-4"></i>
+            <h3 class="text-3xl font-gaming font-bold text-white mb-6">VĂN HOÁ TEAM</h3>
+            <div class="text-gray-300 text-justify text-lg leading-relaxed font-light mb-8 space-y-4">
+                <p>❝ Nhóm thoải mái không ràng buộc. Có thể nói chuyện hơi bậy, chửi cho đã cái miệng nhưng phải biết điểm dừng.</p>
+                <p>Tuyệt đối không lôi gia phả 18 đời cụ kị ra chửi. Mọi hành vi quá khích gây mất đoàn kết sẽ bị <span class="text-red-500 font-bold">KICK</span> ngay lập tức.</p>
+                <p class="text-center text-xl font-bold text-yellow-400 mt-4 border-t border-gray-700 pt-4">⛔ ĐẶC BIỆT: KHÔNG CHỨA CHẤP 3 QUE ⛔</p>
+            </div>
+            <button onclick="toggleCultureModal()" class="px-8 py-2 bg-gray-700 hover:bg-gray-600 rounded text-white font-bold transition w-full">ĐÃ RÕ</button>
+        </div>
+    </div>
+
+    <script>
+        // DATA - UPDATED AVATARS
+        const members = [
+            {
+                name: "THEBÁO",
+                id: "51765023672",
+                avatar: "https://i.ibb.co/q37w4W3F/Focus-on-the-202601172131.jpg",
+                personalImg: "https://i.ibb.co/zT1S8G6J/Create-a-highresolution-2k-202601080001.jpg",
+                zalo: "https://zaloapp.com/qr/p/xzkrobe1cdfg?src=qr",
+                desc: "Chủ gia đình - Người không có tiếng lói trong gia đình. Hiền như bụi nhưng bụi nào thì...",
+                slogan: "gánh team (hoặc gánh tạ or gánh nặng)!, mưu hèn kế mất zạy, ae toy là chính gọi là có mặt, cái nào ra cái nào, chuyện gì ra chuyện gì, đâu ra đâu",
+                guns: "M16A4, AKM, AUG, MG3, FAMAS, GROZA",
+                drive: "https://drive.google.com/drive/folders/10t7w6ygyRW4UtkkaUuM53Z6vQC319q4X",
+                role: "CHỦ TEAM",
+                hex: "#ef4444" 
+            },
+            {
+                name: "x3F・MizHei",
+                id: "5696575513",
+                avatar: "https://i.ibb.co/gFB5xgSS/Focus-on-the-202601172125.jpg",
+                personalImg: "https://i.ibb.co/pBXybBmr/Create-a-super-2k-202601170835-2.jpg",
+                zalo: "http://zaloapp.com/qr/p/1b4csvc528jdl",
+                desc: "Người gánh team có lời lói có sức lặng. Trầm tánh ít lói nhưng đã lói là ngày hôm đó trời sắp sập. Zai đẹp nhất team.",
+                slogan: "có cái Iồn mà đòi ăn bố, đjt mẹ mày, thái tử gia bắc kinh, rất đẹp zai",
+                guns: "S12K, UMP, AUG, AKM, M416",
+                drive: "https://drive.google.com/drive/folders/13qTZETxw3qW7qC-cBgu8sBoi5-LBdbx2",
+                hex: "#3b82f6" 
+            },
+            {
+                name: "؄LàBOT",
+                id: "51967566607",
+                avatar: "https://i.ibb.co/gbt89Pgr/Focus-on-the-202601172142.jpg",
+                personalImg: "https://i.ibb.co/prQgcvZt/Create-a-super-2k-202601160002.jpg",
+                zalo: "http://zaloapp.com/qr/p/14sgtsws76ar",
+                desc: "Đại ra ngấm ngầm của team, im re không bao giờ mở mic, không bao giờ đeo tai nghe, gái theo một nùi.",
+                slogan: "vua map e, anh đây cân hết",
+                guns: "M416, M24, AWM, AUG, ACE32",
+                drive: "https://drive.google.com/drive/folders/1YAd35UOQMYV5gLF80trubhv1T3JR18P_",
+                hex: "#22c55e" 
+            },
+            {
+                name: "takahậuv2",
+                id: "51611570360",
+                avatar: "https://i.ibb.co/KjWxn0Vc/Focus-on-the-202601172140.jpg",
+                personalImg: "https://i.ibb.co/dsjFWB2L/Create-a-highresolution-2k-202601091957-4.jpg",
+                zalo: "http://zaloapp.com/qr/p/1t6touy57mekd",
+                desc: "Con đại báo của team, thấy rút nade là sẽ có 1 người trong team nock. Wâybua riêu.",
+                slogan: "đỉ mẹ, wâybua bị kiệt tha hoá",
+                guns: "M416, AKM, AWM",
+                drive: "https://drive.google.com/drive/folders/1AVmV2X1kFDv-_OM8I6-4So-kl49LJ_Xd",
+                hex: "#a855f7" 
+            },
+            {
+                name: "ʚARP・HANAɞ",
+                id: "51909794820",
+                avatar: "https://i.ibb.co/vC1Nx3N2/Focus-on-the-202601172127.jpg",
+                personalImg: "https://i.ibb.co/0RHHTN5w/Create-a-super-2k-202601160006.jpg",
+                zalo: "https://zaloapp.com/qr/p/1ua7iuy9l97nm?src=qr",
+                desc: "Lang băm hại đồng đội, vì gái bỏ ae, cha nam chuyên dụ dỗ gái nhà lành.",
+                slogan: "còn thở là còn loot, top 1 là số 2 ae là số 1, hay bắn không hay cứu đồng đội là chính",
+                guns: "M24, M762, SCAR-L",
+                drive: "https://drive.google.com/drive/folders/1CdvGwDGvFA1Tr6z77299T7gAdMONG5Lb",
+                hex: "#ec4899" 
+            },
+            {
+                name: "Bảnk・Embé・",
+                id: "5281916668",
+                avatar: "https://i.ibb.co/q37w4W3F/Focus-on-the-202601172131.jpg",
+                personalImg: "https://i.ibb.co/prrSWhkh/Create-a-super-2k-202601160011.jpg",
+                zalo: "http://zaloapp.com/qr/p/1b47i3sgeaoeu",
+                desc: "Dễ ăn, dễ nói, coi money như mạng, bán mình cho tư bản.",
+                slogan: "tất cả tại hana",
+                guns: "AWM, M416, AKM, UMP",
+                drive: "https://drive.google.com/drive/folders/1UmO2vthpzApE4HgBAYLBi6sWYWDJBuaJ",
+                hex: "#eab308" 
+            },
+            {
+                name: "PhanAnh134",
+                id: "52404702459",
+                avatar: "https://i.ibb.co/JF2nPhz7/Focus-on-the-202601172137.jpg",
+                personalImg: "https://i.ibb.co/B2L9vjrj/Create-a-super-2k-202601160014.jpg",
+                zalo: "http://zaloapp.com/qr/p/5nseloelsgqo",
+                desc: "Chơi cũng cũng nhưng được cái nhỏ tuổi nhất team và cũng cực xik nhất team, mỗi tội cười nghe như ma dễ nổi da gà.",
+                slogan: "há há há há há, ờm ờ thì",
+                guns: "AKM, UMP, M416, SKS, SLR",
+                drive: "https://drive.google.com/drive/folders/1U4abwocQ4jtfUE2pEM6y7P4sZwLJjsNt",
+                hex: "#14b8a6" 
+            },
+            {
+                name: "SUPERBÒ",
+                id: "51865319264",
+                avatar: "https://i.ibb.co/F4xtFY0J/Focus-on-the-202601172144.jpg",
+                personalImg: "https://i.ibb.co/QFjJwdb8/Create-a-super-2k-202601160019.jpg",
+                zalo: "http://zaloapp.com/qr/p/t222skzf2pjq",
+                desc: "Gà nhưng chịu chơi. Được cái nói chuyện cưng xỉu.",
+                slogan: "gặp là đánh",
+                guns: "M416, AKM, M24, Kar98k, UMP",
+                drive: "https://drive.google.com/drive/folders/1_C9ytsc9-LtF-f_4F5urP1DW1--e5CCj",
+                hex: "#6366f1" 
+            },
+            {
+                name: "『LT』MyThanh",
+                id: "51865889213",
+                avatar: "https://i.ibb.co/rGL1K4RC/Focus-on-the-202601172135.jpg",
+                personalImg: "https://i.ibb.co/gZXgHsPb/Create-a-highresolution-2k-202601091954.jpg",
+                zalo: "http://zaloapp.com/qr/p/1oo6vsh7h5h6r",
+                desc: "Cũng là wâybua riêu nhưng đã trưởng thành",
+                slogan: "Call Me 『LT』Senec903, Legend Never Die, không biết nữa",
+                guns: "M416, AKM, ACE32, M24, Kar98k",
+                drive: "https://drive.google.com/drive/folders/1weALPi1OoGJWNpCa-W2SGqmL9lMG7FAn",
+                hex: "#9ca3af" 
+            }
+        ];
+
+        // RENDER MEMBERS
+        function renderMembers() {
+            const container = document.getElementById('members-container');
+            let html = '';
+
+            members.forEach((member, index) => {
+                const isEven = index % 2 === 0;
+                const flexClasses = isEven ? 'md:flex-row' : 'md:flex-row-reverse';
+                const marginContent = isEven ? 'md:pl-12' : 'md:pr-12';
+                const textDetail = isEven ? 'text-left' : 'md:text-right text-left';
+                const shadowColor = hexToRgb(member.hex);
+                const crown = member.role ? `<div class="absolute -top-4 -left-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold px-3 py-1 rounded shadow-lg z-20 animate-bounce"><i class="fa-solid fa-crown"></i> ${member.role}</div>` : '';
+
+                html += `
+                <div class="member-card flex flex-col ${flexClasses} items-center group relative p-4" onclick="openProfile(${index})" style="--shadow-color: ${shadowColor};">
+                    
+                    <div class="w-full max-w-[280px] md:max-w-[320px] shrink-0 z-20 transition-transform duration-500 group-hover:-translate-y-2">
+                        <div class="card-frame-container border-2 relative bg-gray-900 shadow-2xl" style="border-color: ${member.hex}">
+                            ${crown}
+                            <img src="${member.avatar}" alt="${member.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80"></div>
+                            
+                            <div class="absolute bottom-4 left-0 w-full text-center md:hidden">
+                                <h3 class="text-2xl font-gaming font-bold text-white drop-shadow-md">${member.name}</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-auto flex-1 mt-6 md:mt-0 ${marginContent} relative z-10">
+                        <div class="glass-panel p-8 md:p-10 relative overflow-hidden rounded-xl md:rounded-none ${isEven ? 'parallelogram-box' : 'parallelogram-box-reverse'} group-hover:bg-white/5 transition-colors">
+                            <div class="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-[${member.hex}] to-transparent ${isEven ? 'left-0' : 'right-0'}"></div>
+                            
+                            <div class="${textDetail} space-y-2">
+                                <h2 class="text-3xl md:text-5xl font-gaming font-bold text-white uppercase tracking-wider drop-shadow-[0_2px_10px_rgba(${shadowColor},0.5)] group-hover:text-[${member.hex}] transition-colors">
+                                    ${member.name}
+                                </h2>
+                                <p class="text-blue-300 font-mono text-lg tracking-widest border-b border-gray-600 inline-block pb-1">
+                                    UID: ${member.id}
+                                </p>
+                                <p class="text-gray-400 mt-4 line-clamp-2 md:line-clamp-none italic">
+                                    "${member.desc}"
+                                </p>
+                                <div class="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0 text-[${member.hex}] font-bold">
+                                    <i class="fa-solid fa-crosshairs animate-spin-slow"></i> CLICK XEM CHI TIẾT
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function formatScrollingText(text) {
+            if (!text) return "";
+            return text.split(/,|，/).map(seg => `<span class="mx-6 inline-block">${seg.trim()}</span>`).join(' • ');
+        }
+
+        function hexToRgb(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '255,255,255';
+        }
+
+        // --- WHEEL LOGIC ---
+        let wheelCanvas, ctx;
+        let startAngle = 0;
+        let arc = Math.PI / (members.length / 2);
+        let spinTimeout = null;
+        let spinArcStart = 10;
+        let spinTime = 0;
+        let spinTimeTotal = 0;
+        let isSpinning = false;
+
+        function initWheel() {
+            wheelCanvas = document.getElementById("wheel-canvas");
+            ctx = wheelCanvas.getContext("2d");
+            drawRouletteWheel();
+        }
+
+        function drawRouletteWheel() {
+            if (!wheelCanvas) return;
+            const outsideRadius = 165; 
+            const textRadius = 130;
+            const insideRadius = 40;
+
+            ctx.clearRect(0,0,350,350);
+            
+            ctx.font = 'bold 14px Rajdhani, sans-serif';
+            ctx.shadowBlur = 0;
+
+            for(let i = 0; i < members.length; i++) {
+                const angle = startAngle + i * arc;
+                
+                ctx.fillStyle = members[i].hex;
+                ctx.beginPath();
+                ctx.arc(175, 175, outsideRadius, angle, angle + arc, false);
+                ctx.arc(175, 175, insideRadius, angle + arc, angle, true);
+                ctx.stroke();
+                ctx.fill();
+
+                ctx.save();
+                ctx.shadowColor = "black";
+                ctx.shadowBlur = 4;
+                ctx.fillStyle = "white";
+                ctx.translate(175 + Math.cos(angle + arc / 2) * textRadius, 
+                              175 + Math.sin(angle + arc / 2) * textRadius);
+                ctx.rotate(angle + arc / 2 + Math.PI / 2);
+                const text = members[i].name;
+                const dispText = text.length > 12 ? text.substring(0, 10) + ".." : text;
+                ctx.fillText(dispText, -ctx.measureText(dispText).width / 2, 0);
+                ctx.restore();
+            }
+        }
+
+        function spinWheel() {
+            if(isSpinning) return;
+            isSpinning = true;
+            document.getElementById('spin-btn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('winner-text').innerText = "ĐANG TÌM NGƯỜI MAY MẮN...";
+            
+            spinAngleStart = Math.random() * 10 + 10;
+            spinTime = 0;
+            spinTimeTotal = Math.random() * 3000 + 4000;
+            rotateWheel();
+        }
+
+        function rotateWheel() {
+            spinTime += 30;
+            if(spinTime >= spinTimeTotal) {
+                stopRotateWheel();
+                return;
+            }
+            const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+            startAngle += (spinAngle * Math.PI / 180);
+            drawRouletteWheel();
+            spinTimeout = requestAnimationFrame(rotateWheel);
+        }
+
+        function stopRotateWheel() {
+            isSpinning = false;
+            document.getElementById('spin-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            
+            const degrees = startAngle * 180 / Math.PI + 90;
+            const arcd = arc * 180 / Math.PI;
+            const index = Math.floor((360 - degrees % 360) / arcd);
+            const winner = members[index % members.length];
+            
+            const winText = document.getElementById('winner-text');
+            winText.innerHTML = `CHÚC MỪNG: <span style="color:${winner.hex}">${winner.name}</span>`;
+            
+            // CONFETTI EFFECT
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: [winner.hex, '#ffffff', '#fbbf24']
+            });
+
+            setTimeout(() => {
+                toggleWheelModal();
+                openProfile(index % members.length);
+                winText.innerText = "";
+            }, 2500);
+        }
+
+        function easeOut(t, b, c, d) {
+            const ts = (t/=d)*t;
+            const tc = ts*t;
+            return b+c*(tc + -3*ts + 3*t);
+        }
+
+        // --- MODAL CONTROLS ---
+        function toggleWheelModal() {
+            const modal = document.getElementById('wheel-modal');
+            modal.classList.toggle('active');
+            if(modal.classList.contains('active')) initWheel();
+        }
+
+        function openProfile(index) {
+            const member = members[index];
+            const modal = document.getElementById('profile-modal');
+            
+            const modalImg = document.getElementById('modal-img');
+            modalImg.src = member.personalImg;
+            
+            // Cập nhật link cho nút Zalo mới ở cột bên phải
+            document.getElementById('modal-img-link').href = member.zalo;
+            
+            document.getElementById('modal-name').innerText = member.name;
+            
+            // Set Role Badge
+            const badge = document.getElementById('modal-role-badge');
+            badge.innerHTML = member.role ? 
+                `<span class="bg-yellow-500 text-black font-bold px-3 py-1 rounded shadow-lg uppercase tracking-wider"><i class="fa-solid fa-crown"></i> ${member.role}</span>` 
+                : `<span class="bg-gray-700 text-white px-3 py-1 rounded uppercase text-sm">Thành viên cốt cán</span>`;
+
+            document.getElementById('modal-slogan').innerHTML = formatScrollingText(member.slogan);
+            document.getElementById('modal-guns').innerHTML = formatScrollingText(member.guns);
+            document.getElementById('modal-desc').innerText = member.desc;
+            document.getElementById('modal-drive').href = member.drive;
+
+            modal.classList.add('active');
+        }
+
+        function closeProfile() {
+            document.getElementById('profile-modal').classList.remove('active');
+        }
+
+        function toggleCultureModal() {
+            document.getElementById('culture-modal').classList.toggle('active');
+        }
+
+        // --- LIGHTBOX CONTROLS ---
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox-modal');
+            const lightboxImg = document.getElementById('lightbox-img');
+            
+            if(src) {
+                lightboxImg.src = src;
+                lightbox.classList.add('active');
+            }
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox-modal').classList.remove('active');
+        }
+
+        // INIT & LISTENERS
+        window.onload = function() {
+            renderMembers();
+            initWheel();
+        };
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                // Đóng lightbox riêng vì nó có z-index cao hơn
+                if(event.target.id === 'lightbox-modal') {
+                    closeLightbox();
+                } else {
+                    event.target.classList.remove('active');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+
